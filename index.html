@@ -13,6 +13,10 @@
             font-family: 'Montserrat', sans-serif;
             background-color: #faf6f2;
             color: #333;
+            user-select: none;
+            /* Prevent text selection */
+            -webkit-user-select: none;
+            /* Safari support */
         }
         
         h1,
@@ -48,6 +52,14 @@
                 opacity: 1;
             }
         }
+        /* Prevent text selection for all elements */
+        
+        * {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
     </style>
 </head>
 
@@ -55,7 +67,7 @@
     <!-- Navigation -->
     <nav class="bg-white bg-opacity-90 backdrop-blur-sm fixed w-full z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
+            <div class="flex justify-between h-16 items-start">
                 <div class="flex items-center">
                     <a href="#" class="text-2xl font-bold text-amber-800">
                         <i class="fas fa-spa mr-2"></i>Asha Scents
@@ -70,21 +82,21 @@
                         <i class="fas fa-shopping-bag text-xl text-amber-700 hover:text-amber-900 transition"></i>
                     </a>
                 </div>
-                <div class="md:hidden flex items-start mt-2">
-                    <button id="mobile-menu-button" class="text-gray-700" title="Open menu">
-                        <i class="fas fa-bars text-xl"></i>
+                <div class="block md:hidden flex items-start mt-2 absolute right-4 top-4 z-50">
+                    <button id="mobile-menu-button" class="text-gray-700 focus:outline-none" title="Open menu" aria-label="Open menu">
+                        <i class="fas fa-bars text-2xl"></i>
                     </button>
                 </div>
             </div>
         </div>
 
         <!-- Mobile menu -->
-        <div id="mobile-menu" class="md:hidden hidden bg-white pt-2 pb-4 px-4 shadow-lg">
-            <a href="#fragrances" class="block py-2 text-gray-700 hover:text-amber-600">Fragrances</a>
-            <a href="#about" class="block py-2 text-gray-700 hover:text-amber-600">Our Story</a>
-            <a href="#guide" class="block py-2 text-gray-700 hover:text-amber-600">Scent Guide</a>
-            <a href="#contact" class="block py-2 text-gray-700 hover:text-amber-600">Contact</a>
-            <a href="#" class="block py-2 text-amber-700">Shop</a>
+        <div id="mobile-menu" class="md:hidden hidden fixed inset-0 bg-white bg-opacity-95 pt-20 pb-4 px-8 shadow-lg z-40 transition-all duration-300">
+            <a href="#fragrances" class="block py-4 text-lg text-gray-700 hover:text-amber-600">Fragrances</a>
+            <a href="#about" class="block py-4 text-lg text-gray-700 hover:text-amber-600">Our Story</a>
+            <a href="#guide" class="block py-4 text-lg text-gray-700 hover:text-amber-600">Scent Guide</a>
+            <a href="#contact" class="block py-4 text-lg text-gray-700 hover:text-amber-600">Contact</a>
+            <a href="#" class="block py-4 text-lg text-amber-700">Shop</a>
         </div>
     </nav>
 
@@ -264,7 +276,7 @@
                     <div>
                         <h2 class="text-3xl md:text-4xl font-bold mb-6">Our Story</h2>
                         <p class="text-gray-600 mb-4">
-                            Founded in Paris in 2010, LuxeScents was born from a passion for capturing fleeting moments in bottle. Our master perfumer, Antoine Lacroix, creates each fragrance using only the finest ingredients sourced from around the world.
+                            Founded in Uganda in 2010, LuxeScents was born from a passion for capturing fleeting moments in bottle. Our master perfumer, Antoine Lacroix, creates each fragrance using only the finest ingredients sourced from around the world.
                         </p>
                         <p class="text-gray-600 mb-6">
                             We believe perfume is an invisible accessory that completes your personal style. Each LuxeScents fragrance is meticulously crafted to tell a story and evoke emotion, blending tradition with modern sophistication.
@@ -466,28 +478,25 @@
 
     <!-- Mobile menu toggle script -->
     <script>
-        document.getElementById('mobile-menu-button').addEventListener('click', function(event) {
+        // Mobile menu toggle
+        const menuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuButton.addEventListener('click', function(event) {
             event.stopPropagation();
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
+            mobileMenu.classList.toggle('hidden');
         });
-
         // Close mobile menu when a link is clicked
         document.querySelectorAll('#mobile-menu a').forEach(link => {
             link.addEventListener('click', function() {
-                document.getElementById('mobile-menu').classList.add('hidden');
+                mobileMenu.classList.add('hidden');
             });
         });
-
         // Close mobile menu when clicking outside
         document.addEventListener('click', function(event) {
-            const menu = document.getElementById('mobile-menu');
-            const button = document.getElementById('mobile-menu-button');
-            if (!menu.classList.contains('hidden') && !menu.contains(event.target) && event.target !== button) {
-                menu.classList.add('hidden');
+            if (!mobileMenu.classList.contains('hidden') && !mobileMenu.contains(event.target) && event.target !== menuButton) {
+                mobileMenu.classList.add('hidden');
             }
         });
-
         // Simple animation for scent wheel
         const wheel = document.querySelector('.scent-wheel');
         if (wheel) {
@@ -497,7 +506,6 @@
                 wheel.style.transform = `rotate(${rotation}deg)`;
             }, 50);
         }
-
         // Fade-in animation for elements
         const fadeElements = document.querySelectorAll('.fade-in');
         const fadeObserver = new IntersectionObserver((entries) => {
@@ -509,10 +517,13 @@
         }, {
             threshold: 0.1
         });
-
         fadeElements.forEach(el => {
             el.style.opacity = 0;
             fadeObserver.observe(el);
+        });
+        // Disable right-click/context menu
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
         });
     </script>
 </body>
